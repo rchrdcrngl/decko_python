@@ -121,9 +121,7 @@ class HtmlRenderer:
     def _render_slide(self, slide: Slide) -> str:
         attrs = [f'data-template-id="{slide.template_id}"']
         if slide.transition:
-            attrs.append(
-                f"data-transition='{slide.transition.model_dump_json(by_alias=True)}'"
-            )
+            attrs.append(f"data-transition='{slide.transition.model_dump_json(by_alias=True)}'")
         if slide.ambient:
             attrs.append(f'data-ambient="{slide.ambient.type}"')
             if slide.ambient.intensity:
@@ -147,19 +145,12 @@ class HtmlRenderer:
             )
 
         block_list = blocks if isinstance(blocks, list) else [blocks]
-        blocks_html = "".join(
-            self._render_block_entry(b, slide)
-            for b in block_list
-        )
+        blocks_html = "".join(self._render_block_entry(b, slide) for b in block_list)
         return f'  <div class="decko-slot" data-slot="{slot_id}"{style}>{blocks_html}</div>'
 
     def _render_block_entry(self, block: Block, slide: Slide) -> str:
         anim = ""
-        if (
-            slide.animations
-            and block.id
-            and block.id in slide.animations
-        ):
+        if slide.animations and block.id and block.id in slide.animations:
             anim_json = slide.animations[block.id].model_dump_json(by_alias=True)
             anim = f" data-animate='{anim_json}'"
 
