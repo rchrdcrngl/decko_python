@@ -47,4 +47,4 @@ class ListItem(BaseModel):
     text: RichText
     checked: Union[bool, None] = None
     icon: Union[str, None] = None
-    children: List["ListItem"] = []
+    children: list[ListItem] = []
