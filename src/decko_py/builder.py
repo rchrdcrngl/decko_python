@@ -12,7 +12,7 @@ class DeckBuilder:
     def __init__(self) -> None:
         self._meta = DeckMeta(title="Untitled")
         self._theme = DeckTheme(name="midnight")
-        self._slides: list = []
+        self._slides: list[Slide] = []
         self._variables: dict[str, str] = {}
 
     def meta(

@@ -42,5 +42,5 @@ class TemplateRegistry:
     def get(self, id: str) -> TemplateDefinition | None:
         return self._templates.get(id)
 
-    def all(self) -> list:
+    def all(self) -> list[TemplateDefinition]:
         return list(self._templates.values())

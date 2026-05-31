@@ -38,7 +38,7 @@ ignore = ["UP007"]  # Allow Union[X, Y] syntax (3.8 compat clarity)
 
 # ── Mypy ────────────────────────────────────────────────────────────────────
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 strict = true
 plugins = ["pydantic.mypy"]
 

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Union
 
 from decko_py.cdn import CdnConfig
-from decko_py.models.blocks import XBlock
+from decko_py.models.blocks import Block, XBlock
 from decko_py.models.slide import Deck, Slide
 
 BUILTIN_THEMES = {"nova", "midnight", "kinetic"}
@@ -122,7 +122,7 @@ class HtmlRenderer:
         attrs = [f'data-template-id="{slide.template_id}"']
         if slide.transition:
             attrs.append(
-                f"data-transition='{slide.transition.model_dump_json(by_alias=True)}'"  # type: ignore[union-attr]
+                f"data-transition='{slide.transition.model_dump_json(by_alias=True)}'"
             )
         if slide.ambient:
             attrs.append(f'data-ambient="{slide.ambient.type}"')
@@ -139,7 +139,7 @@ class HtmlRenderer:
         )
         return f'<section class="decko-slide" {attrs_str}>\n{slots_html}\n</section>'
 
-    def _render_slot(self, slot_id: str, blocks: object, slide: Slide) -> str:
+    def _render_slot(self, slot_id: str, blocks: Union[Block, list[Block]], slide: Slide) -> str:
         style = ""
         if slide.slot_styles and slot_id in slide.slot_styles:
             style = (
@@ -149,28 +149,27 @@ class HtmlRenderer:
         block_list = blocks if isinstance(blocks, list) else [blocks]
         blocks_html = "".join(
             self._render_block_entry(b, slide)
-            for b in block_list  # type: ignore[union-attr]
+            for b in block_list
         )
         return f'  <div class="decko-slot" data-slot="{slot_id}"{style}>{blocks_html}</div>'
 
-    def _render_block_entry(self, block: object, slide: Slide) -> str:
+    def _render_block_entry(self, block: Block, slide: Slide) -> str:
         anim = ""
         if (
             slide.animations
-            and hasattr(block, "id")
-            and block.id  # type: ignore[union-attr]
-            and block.id in slide.animations  # type: ignore[union-attr]
+            and block.id
+            and block.id in slide.animations
         ):
-            anim_json = slide.animations[block.id].model_dump_json(by_alias=True)  # type: ignore[union-attr]
+            anim_json = slide.animations[block.id].model_dump_json(by_alias=True)
             anim = f" data-animate='{anim_json}'"
 
         if isinstance(block, XBlock):
             inner = self.blocks.render(block)
         else:
-            block_json = block.model_dump_json(by_alias=True)  # type: ignore[union-attr]
+            block_json = block.model_dump_json(by_alias=True)
             inner = (
                 f'<div class="decko-block" '
-                f'data-block-type="{block.type}" '  # type: ignore[union-attr]
+                f'data-block-type="{block.type}" '
                 f"data-block='{block_json}'></div>"
             )
         return f'<div class="decko-block-wrapper"{anim}>{inner}</div>'

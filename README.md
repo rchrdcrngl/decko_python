@@ -1,6 +1,6 @@
 # decko-py
 
-Python wrapper for [Decko](https://github.com/deckohq/decko) — build, validate, and render presentations programmatically.
+Python wrapper for [Decko](https://github.com/rchrdcrngl/decko) — build, validate, and render presentations programmatically.
 
 ## Install
 
@@ -108,7 +108,7 @@ mypy src/decko_py
 
 ## CI/CD
 
-- **CI**: runs on every push/PR — lint (ruff), type check (mypy), tests (pytest) across Python 3.8–3.12
+- **CI**: runs on every push/PR — lint (ruff), type check (mypy), tests (pytest) across Python 3.10–3.12
 - **Publish**: triggers on GitHub release → builds wheel + sdist → publishes to PyPI via OIDC trusted publishing (no API key required)
 
 ## License
