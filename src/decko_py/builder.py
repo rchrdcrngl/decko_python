@@ -29,7 +29,7 @@ class DeckBuilder:
             author=author,
             org=org,
             date=date,
-            aspect_ratio=aspect_ratio,  # type: ignore[arg-type]
+            aspect_ratio=aspect_ratio,
             language=language,
         )
         return self

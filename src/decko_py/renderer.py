@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 from decko_py.cdn import CdnConfig
 from decko_py.models.blocks import Block, XBlock
 from decko_py.models.slide import Deck, Slide
+
+if TYPE_CHECKING:
+    from decko_py.registry import BlockRegistry
 
 BUILTIN_THEMES = {"nova", "midnight", "kinetic"}
 
@@ -18,7 +21,7 @@ class HtmlRenderer:
     def __init__(
         self,
         cdn: Union[CdnConfig, None] = None,
-        block_registry: Union[_BlockRegistry, None] = None,
+        block_registry: Union[BlockRegistry, None] = None,
         extra_css_urls: Union[list[str], None] = None,
         extra_css_files: Union[list[Path], None] = None,
         extra_css_inline: Union[list[str], None] = None,
@@ -167,7 +170,3 @@ class HtmlRenderer:
 
     def save(self, deck: Deck, path: Union[str, Path]) -> None:
         Path(path).write_text(self.render(deck), encoding="utf-8")
-
-
-# type alias for type hint in __init__
-_BlockRegistry = object
