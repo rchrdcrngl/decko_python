@@ -9,6 +9,7 @@ from decko_py.models.theme import DeckTheme
 
 if TYPE_CHECKING:
     from decko_py.models.typed_slides import TypedSlide
+    from decko_py.registry import TemplateRegistry
 
 
 class DeckBuilder:
@@ -54,7 +55,7 @@ class DeckBuilder:
             self._slides.append(slide)
         return self
 
-    def build(self, strict: bool = True, registry: object = None) -> Deck:
+    def build(self, strict: bool = True, registry: TemplateRegistry | None = None) -> Deck:
         deck = Deck(
             meta=self._meta,
             theme=self._theme,
@@ -83,7 +84,7 @@ class DeckBuilder:
         cdn: CdnConfig | None = None,
         block_registry: object | None = None,
         strict: bool = True,
-        registry: object = None,
+        registry: TemplateRegistry | None = None,
         **renderer_kwargs: object,
     ) -> str:
         from decko_py.renderer import HtmlRenderer
@@ -96,7 +97,7 @@ class DeckBuilder:
         self,
         path: Union[str, Path],
         strict: bool = True,
-        registry: object = None,
+        registry: TemplateRegistry | None = None,
         **renderer_kwargs: object,
     ) -> None:
         from decko_py.renderer import HtmlRenderer

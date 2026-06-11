@@ -6,6 +6,8 @@ from decko_py.models.template import (
     AiHints,
     BaseTemplate,
     ContentBudget,
+    LayoutMode,
+    TemplateCategory,
     TemplateSlot,
 )
 
@@ -18,7 +20,7 @@ if TYPE_CHECKING:
 class TitleSlideTemplate(BaseTemplate):
     id: str = "title-slide"
     name: str = "Title Slide"
-    category: str = "narrative"
+    category: TemplateCategory = "narrative"
     description: str = "Deck opener with hero headline, optional subtitle, eyebrow, and logo."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -46,7 +48,7 @@ class TitleSlideTemplate(BaseTemplate):
             content_budget=ContentBudget(),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="First slide of a deck or major section opener.",
         good_for=["deck intro", "key statement", "brand moment"],
@@ -58,7 +60,7 @@ class TitleSlideTemplate(BaseTemplate):
 class SectionBreakTemplate(BaseTemplate):
     id: str = "section-break"
     name: str = "Section Break"
-    category: str = "narrative"
+    category: TemplateCategory = "narrative"
     description: str = "Visual divider between major sections."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -80,7 +82,7 @@ class SectionBreakTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=200),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Transition between major deck sections.",
         good_for=["pacing", "section numbering", "topic transitions"],
@@ -92,7 +94,7 @@ class SectionBreakTemplate(BaseTemplate):
 class AgendaTemplate(BaseTemplate):
     id: str = "agenda"
     name: str = "Agenda"
-    category: str = "narrative"
+    category: TemplateCategory = "narrative"
     description: str = "Ordered list of agenda items with optional title."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -108,7 +110,7 @@ class AgendaTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=80),
         ),
     ]
-    layout_modes: list[str] = ["auto", "top-heavy"]
+    layout_modes: list[LayoutMode] = ["auto", "top-heavy"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show the deck's agenda or a meeting's topics early on.",
         good_for=["meeting previews", "structured talks", "course outlines"],
@@ -120,7 +122,7 @@ class AgendaTemplate(BaseTemplate):
 class ClosingTemplate(BaseTemplate):
     id: str = "closing"
     name: str = "Closing"
-    category: str = "narrative"
+    category: TemplateCategory = "narrative"
     description: str = "Final slide with headline, CTA, contact info, and logo."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -148,7 +150,7 @@ class ClosingTemplate(BaseTemplate):
             content_budget=ContentBudget(),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Last slide — thank-you, next steps, or contact.",
         good_for=["Q&A prompt", "call to action", "contact details"],
@@ -160,7 +162,7 @@ class ClosingTemplate(BaseTemplate):
 class QuoteTemplate(BaseTemplate):
     id: str = "quote"
     name: str = "Quote"
-    category: str = "narrative"
+    category: TemplateCategory = "narrative"
     description: str = "Featured quote with attribution and optional avatar."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -182,7 +184,7 @@ class QuoteTemplate(BaseTemplate):
             content_budget=ContentBudget(),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Highlight a key quote from a person or source.",
         good_for=["testimonials", "memorable statements", "social proof"],
@@ -197,7 +199,7 @@ class QuoteTemplate(BaseTemplate):
 class SingleColumnTemplate(BaseTemplate):
     id: str = "single-column"
     name: str = "Single Column"
-    category: str = "content"
+    category: TemplateCategory = "content"
     description: str = "Centered single-column layout with title and body."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -213,7 +215,7 @@ class SingleColumnTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=600, max_words=100),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered", "top-heavy"]
+    layout_modes: list[LayoutMode] = ["auto", "centered", "top-heavy"]
     ai_hints: AiHints = AiHints(
         when_to_use="Simple focused content — one idea, no media.",
         good_for=["short explanations", "key statements", "text + callout"],
@@ -225,7 +227,7 @@ class SingleColumnTemplate(BaseTemplate):
 class TwoColumnTemplate(BaseTemplate):
     id: str = "two-column"
     name: str = "Two Column"
-    category: str = "content"
+    category: TemplateCategory = "content"
     description: str = "Side-by-side columns for comparison or parallel content."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -259,7 +261,7 @@ class TwoColumnTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=60),
         ),
     ]
-    layout_modes: list[str] = ["auto", "split"]
+    layout_modes: list[LayoutMode] = ["auto", "split"]
     ai_hints: AiHints = AiHints(
         when_to_use="Compare two ideas, before/after, or pros/cons.",
         good_for=["comparisons", "parallel arguments", "text + list pairs"],
@@ -271,7 +273,7 @@ class TwoColumnTemplate(BaseTemplate):
 class HeaderBodyTemplate(BaseTemplate):
     id: str = "header-body"
     name: str = "Header + Body"
-    category: str = "content"
+    category: TemplateCategory = "content"
     description: str = "General-purpose slide with title, body, and optional subtitle."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -293,7 +295,7 @@ class HeaderBodyTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=600, max_words=100),
         ),
     ]
-    layout_modes: list[str] = ["auto", "top-heavy", "bottom-heavy"]
+    layout_modes: list[LayoutMode] = ["auto", "top-heavy", "bottom-heavy"]
     ai_hints: AiHints = AiHints(
         when_to_use="Most narrative slides — explanations, arguments, feature descriptions.",
         good_for=["bullet points", "code snippets", "text + callout combos"],
@@ -305,7 +307,7 @@ class HeaderBodyTemplate(BaseTemplate):
 class BulletsMediaTemplate(BaseTemplate):
     id: str = "bullets-media"
     name: str = "Bullets + Media"
-    category: str = "content"
+    category: TemplateCategory = "content"
     description: str = "Bullet list alongside a media asset."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -333,7 +335,7 @@ class BulletsMediaTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=120),
         ),
     ]
-    layout_modes: list[str] = ["auto", "split"]
+    layout_modes: list[LayoutMode] = ["auto", "split"]
     ai_hints: AiHints = AiHints(
         when_to_use="Explain a concept with supporting visual.",
         good_for=["product features", "process steps with diagram", "text + screenshot"],
@@ -345,7 +347,7 @@ class BulletsMediaTemplate(BaseTemplate):
 class ThreeUpTemplate(BaseTemplate):
     id: str = "three-up"
     name: str = "Three Up"
-    category: str = "content"
+    category: TemplateCategory = "content"
     description: str = "Three equal columns for parallel points or pillars."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -391,7 +393,7 @@ class ThreeUpTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=60),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show three parallel ideas, pillars, or options.",
         good_for=["three-point frameworks", "feature trios", "metric + description"],
@@ -406,7 +408,7 @@ class ThreeUpTemplate(BaseTemplate):
 class BigMetricTemplate(BaseTemplate):
     id: str = "big-metric"
     name: str = "Big Metric"
-    category: str = "data"
+    category: TemplateCategory = "data"
     description: str = "Single hero metric dominating the slide."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -428,7 +430,7 @@ class BigMetricTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=200),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Announce a single standout number.",
         good_for=["milestone numbers", "headline KPIs", "impact statements"],
@@ -440,7 +442,7 @@ class BigMetricTemplate(BaseTemplate):
 class MetricTrioTemplate(BaseTemplate):
     id: str = "metric-trio"
     name: str = "Metric Trio"
-    category: str = "data"
+    category: TemplateCategory = "data"
     description: str = "Three KPI cards side by side."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -468,7 +470,7 @@ class MetricTrioTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=80),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show exactly 3 headline numbers together.",
         good_for=["KPI scorecard", "before/after/target triplet", "three-pillar metrics"],
@@ -480,7 +482,7 @@ class MetricTrioTemplate(BaseTemplate):
 class ChartCalloutTemplate(BaseTemplate):
     id: str = "chart-callout"
     name: str = "Chart + Callout"
-    category: str = "data"
+    category: TemplateCategory = "data"
     description: str = "Chart with optional callout annotation."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -502,7 +504,7 @@ class ChartCalloutTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=200),
         ),
     ]
-    layout_modes: list[str] = ["auto", "top-heavy"]
+    layout_modes: list[LayoutMode] = ["auto", "top-heavy"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show a chart and highlight one key insight.",
         good_for=["bar/line/area charts with insight callout", "trend + annotation"],
@@ -514,7 +516,7 @@ class ChartCalloutTemplate(BaseTemplate):
 class TableSlideTemplate(BaseTemplate):
     id: str = "table-slide"
     name: str = "Table Slide"
-    category: str = "data"
+    category: TemplateCategory = "data"
     description: str = "Tabular data with title and optional footnote."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -536,7 +538,7 @@ class TableSlideTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=150),
         ),
     ]
-    layout_modes: list[str] = ["auto", "top-heavy"]
+    layout_modes: list[LayoutMode] = ["auto", "top-heavy"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show structured tabular data — rankings, comparisons, breakdowns.",
         good_for=["leaderboards", "product comparisons", "multi-column data"],
@@ -551,7 +553,7 @@ class TableSlideTemplate(BaseTemplate):
 class FullBleedMediaTemplate(BaseTemplate):
     id: str = "full-bleed-media"
     name: str = "Full Bleed Media"
-    category: str = "visual"
+    category: TemplateCategory = "visual"
     description: str = "Edge-to-edge media fill with optional overlay text and caption."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -573,7 +575,7 @@ class FullBleedMediaTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=120),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Visual impact slide — photo, video, or illustration dominates.",
         good_for=["emotional moments", "product photography", "scene-setting"],
@@ -585,7 +587,7 @@ class FullBleedMediaTemplate(BaseTemplate):
 class MediaCaptionTemplate(BaseTemplate):
     id: str = "media-caption"
     name: str = "Media + Caption"
-    category: str = "visual"
+    category: TemplateCategory = "visual"
     description: str = "Media asset with title and caption below."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -607,7 +609,7 @@ class MediaCaptionTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=200),
         ),
     ]
-    layout_modes: list[str] = ["auto", "top-heavy", "bottom-heavy"]
+    layout_modes: list[LayoutMode] = ["auto", "top-heavy", "bottom-heavy"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show a single visual with explanatory context.",
         good_for=["screenshots with annotation", "diagram walkthrough", "before/after"],
@@ -619,7 +621,7 @@ class MediaCaptionTemplate(BaseTemplate):
 class ImageGridTemplate(BaseTemplate):
     id: str = "image-grid"
     name: str = "Image Grid"
-    category: str = "visual"
+    category: TemplateCategory = "visual"
     description: str = "2–4 image grid with optional title."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -653,7 +655,7 @@ class ImageGridTemplate(BaseTemplate):
             content_budget=ContentBudget(),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show multiple visuals in a grid layout.",
         good_for=["portfolio showcase", "team photos", "product gallery"],
@@ -665,7 +667,7 @@ class ImageGridTemplate(BaseTemplate):
 class ComparisonTemplate(BaseTemplate):
     id: str = "comparison"
     name: str = "Comparison"
-    category: str = "visual"
+    category: TemplateCategory = "visual"
     description: str = "Side-by-side visual comparison with optional labels."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -699,7 +701,7 @@ class ComparisonTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=60),
         ),
     ]
-    layout_modes: list[str] = ["auto", "split"]
+    layout_modes: list[LayoutMode] = ["auto", "split"]
     ai_hints: AiHints = AiHints(
         when_to_use="Visual before/after, option A vs B, or two competing approaches.",
         good_for=["before/after media", "design variants", "product comparison"],
@@ -711,7 +713,7 @@ class ComparisonTemplate(BaseTemplate):
 class KineticCanvasTemplate(BaseTemplate):
     id: str = "kinetic-canvas"
     name: str = "Kinetic Canvas"
-    category: str = "visual"
+    category: TemplateCategory = "visual"
     description: str = "Free-form canvas for kinetic typography with up to 5 words."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -763,7 +765,7 @@ class KineticCanvasTemplate(BaseTemplate):
             content_budget=ContentBudget(),
         ),
     ]
-    layout_modes: list[str] = ["auto"]
+    layout_modes: list[LayoutMode] = ["auto"]
     ai_hints: AiHints = AiHints(
         when_to_use="Expressive typographic moment — motion-forward, high-impact.",
         good_for=["theme words", "brand slogans", "kinetic intros"],
@@ -775,7 +777,7 @@ class KineticCanvasTemplate(BaseTemplate):
 class KineticHeroTemplate(BaseTemplate):
     id: str = "kinetic-hero"
     name: str = "Kinetic Hero"
-    category: str = "visual"
+    category: TemplateCategory = "visual"
     description: str = "Stacked kinetic words (top/mid/bottom) for bold typographic impact."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -821,7 +823,7 @@ class KineticHeroTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=120),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Three-word stacked typography for maximum visual punch.",
         good_for=["brand reveals", "three-word mantras", "motion-forward openers"],
@@ -836,7 +838,7 @@ class KineticHeroTemplate(BaseTemplate):
 class CodeWalkthroughTemplate(BaseTemplate):
     id: str = "code-walkthrough"
     name: str = "Code Walkthrough"
-    category: str = "technical"
+    category: TemplateCategory = "technical"
     description: str = "Code block with title and optional annotation."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -858,7 +860,7 @@ class CodeWalkthroughTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=300),
         ),
     ]
-    layout_modes: list[str] = ["auto", "split"]
+    layout_modes: list[LayoutMode] = ["auto", "split"]
     ai_hints: AiHints = AiHints(
         when_to_use="Walk through a code snippet with optional explanation.",
         good_for=["API examples", "implementation demos", "before/after code"],
@@ -870,7 +872,7 @@ class CodeWalkthroughTemplate(BaseTemplate):
 class ArchitectureDiagramTemplate(BaseTemplate):
     id: str = "architecture-diagram"
     name: str = "Architecture Diagram"
-    category: str = "technical"
+    category: TemplateCategory = "technical"
     description: str = "System diagram with title and optional notes."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -892,7 +894,7 @@ class ArchitectureDiagramTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=300),
         ),
     ]
-    layout_modes: list[str] = ["auto", "top-heavy"]
+    layout_modes: list[LayoutMode] = ["auto", "top-heavy"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show a system, infrastructure, or data flow diagram.",
         good_for=["system architecture", "data pipelines", "network diagrams"],
@@ -904,7 +906,7 @@ class ArchitectureDiagramTemplate(BaseTemplate):
 class TerminalTemplate(BaseTemplate):
     id: str = "terminal"
     name: str = "Terminal"
-    category: str = "technical"
+    category: TemplateCategory = "technical"
     description: str = "Full-bleed terminal/CLI code block with optional title."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -920,7 +922,7 @@ class TerminalTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=80),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show a CLI session, shell commands, or terminal output.",
         good_for=["installation steps", "command demos", "log output"],
