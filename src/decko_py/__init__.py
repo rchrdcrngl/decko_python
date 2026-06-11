@@ -45,21 +45,8 @@ from decko_py.models.blocks import (
     TextBlock,
     XBlock,
 )
-from decko_py.models.composition import Composition
-from decko_py.models.rich_text import InlineAnimation, InlineLink, InlineNode, RichText
-from decko_py.models.slide import (
-    ColorBackground,
-    Deck,
-    DeckMeta,
-    GradientBackground,
-    ImageBackground,
-    Slide,
-    SlideAmbient,
-    SlideBackground,
-    SlotStyle,
-    ThemeBackground,
-)
 from decko_py.models.catalog import (
+    DEFAULT_TEMPLATES,
     AgendaTemplate,
     ArchitectureDiagramTemplate,
     BigMetricTemplate,
@@ -68,7 +55,6 @@ from decko_py.models.catalog import (
     ClosingTemplate,
     CodeWalkthroughTemplate,
     ComparisonTemplate,
-    DEFAULT_TEMPLATES,
     FullBleedMediaTemplate,
     HeaderBodyTemplate,
     ImageGridTemplate,
@@ -85,6 +71,20 @@ from decko_py.models.catalog import (
     TitleSlideTemplate,
     TwoColumnTemplate,
     register_defaults,
+)
+from decko_py.models.composition import Composition
+from decko_py.models.rich_text import InlineAnimation, InlineLink, InlineNode, RichText
+from decko_py.models.slide import (
+    ColorBackground,
+    Deck,
+    DeckMeta,
+    GradientBackground,
+    ImageBackground,
+    Slide,
+    SlideAmbient,
+    SlideBackground,
+    SlotStyle,
+    ThemeBackground,
 )
 from decko_py.models.template import (
     AiHints,

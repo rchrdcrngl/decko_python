@@ -45,7 +45,7 @@ class DeckBuilder:
         self._variables[key] = value
         return self
 
-    def slide(self, slide: Union[Slide, "TypedSlide"]) -> DeckBuilder:
+    def slide(self, slide: Union[Slide, TypedSlide]) -> DeckBuilder:
         from decko_py.models.typed_slides import TypedSlide as _TypedSlide
 
         if isinstance(slide, _TypedSlide):
@@ -71,7 +71,8 @@ class DeckBuilder:
         violations = validate_content(deck, _reg)
         if violations and strict:
             lines = "\n".join(
-                f"  slide {v.slide_index}, slot '{v.slot_id}': {v.field} exceeded ({v.actual} > {v.budget})"
+                f"  slide {v.slide_index}, slot '{v.slot_id}': "
+                f"{v.field} exceeded ({v.actual} > {v.budget})"
                 for v in violations
             )
             raise ValueError(f"Content budget violations:\n{lines}")

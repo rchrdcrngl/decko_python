@@ -1,31 +1,4 @@
 from decko_py.models.animation import AnimatableProps, BlockAnimation
-from decko_py.models.catalog import (
-    AgendaTemplate,
-    ArchitectureDiagramTemplate,
-    BigMetricTemplate,
-    BulletsMediaTemplate,
-    ChartCalloutTemplate,
-    ClosingTemplate,
-    CodeWalkthroughTemplate,
-    ComparisonTemplate,
-    DEFAULT_TEMPLATES,
-    FullBleedMediaTemplate,
-    HeaderBodyTemplate,
-    ImageGridTemplate,
-    KineticCanvasTemplate,
-    KineticHeroTemplate,
-    MediaCaptionTemplate,
-    MetricTrioTemplate,
-    QuoteTemplate,
-    SectionBreakTemplate,
-    SingleColumnTemplate,
-    TableSlideTemplate,
-    TerminalTemplate,
-    ThreeUpTemplate,
-    TitleSlideTemplate,
-    TwoColumnTemplate,
-    register_defaults,
-)
 from decko_py.models.blocks import (
     Block,
     CalloutBlock,
@@ -52,6 +25,33 @@ from decko_py.models.blocks import (
     TextBlock,
     TextDisplay,
     XBlock,
+)
+from decko_py.models.catalog import (
+    DEFAULT_TEMPLATES,
+    AgendaTemplate,
+    ArchitectureDiagramTemplate,
+    BigMetricTemplate,
+    BulletsMediaTemplate,
+    ChartCalloutTemplate,
+    ClosingTemplate,
+    CodeWalkthroughTemplate,
+    ComparisonTemplate,
+    FullBleedMediaTemplate,
+    HeaderBodyTemplate,
+    ImageGridTemplate,
+    KineticCanvasTemplate,
+    KineticHeroTemplate,
+    MediaCaptionTemplate,
+    MetricTrioTemplate,
+    QuoteTemplate,
+    SectionBreakTemplate,
+    SingleColumnTemplate,
+    TableSlideTemplate,
+    TerminalTemplate,
+    ThreeUpTemplate,
+    TitleSlideTemplate,
+    TwoColumnTemplate,
+    register_defaults,
 )
 from decko_py.models.composition import Composition
 from decko_py.models.rich_text import (
@@ -83,6 +83,17 @@ from decko_py.models.template import (
     TemplateSlot,
 )
 from decko_py.models.theme import DeckTheme, ThemeTokens
+from decko_py.models.transition import (
+    CutTransition,
+    FadeTransition,
+    MorphTransition,
+    PanTransition,
+    ParticleBurstTransition,
+    SlideTransition,
+    WipeTransition,
+    ZoomOutTransition,
+    ZoomThroughTransition,
+)
 from decko_py.models.typed_slides import (
     AgendaSlide,
     ArchitectureDiagramSlide,
@@ -108,17 +119,6 @@ from decko_py.models.typed_slides import (
     TitleSlide,
     TwoColumnSlide,
     TypedSlide,
-)
-from decko_py.models.transition import (
-    CutTransition,
-    FadeTransition,
-    MorphTransition,
-    PanTransition,
-    ParticleBurstTransition,
-    SlideTransition,
-    WipeTransition,
-    ZoomOutTransition,
-    ZoomThroughTransition,
 )
 
 __all__ = [

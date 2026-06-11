@@ -65,7 +65,10 @@ KineticWord = Annotated[
 
 
 class TypedSlide(BaseModel):
-    """Strongly-typed slide. Subclasses expose slot fields as kwargs. Call .to_slide() for the renderer."""
+    """Strongly-typed slide. Subclasses expose slot fields as kwargs.
+
+    Call .to_slide() to convert to a Slide for the renderer.
+    """
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
@@ -99,7 +102,7 @@ class TypedSlide(BaseModel):
         )
 
     @classmethod
-    def definition(cls) -> Union["BaseTemplate", None]:
+    def definition(cls) -> Union[BaseTemplate, None]:
         from decko_py.models.catalog import DEFAULT_TEMPLATES
 
         field = cls.model_fields.get("template_id")

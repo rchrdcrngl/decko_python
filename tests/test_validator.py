@@ -114,7 +114,12 @@ def test_callout_body_violation(template_registry):
     deck = Deck(
         meta=DeckMeta(title="x"),
         theme=DeckTheme(name="midnight"),
-        slides=[Slide(template_id="title-slide", slots={"headline": CalloutBlock(body="too long text")})],
+        slides=[
+            Slide(
+                template_id="title-slide",
+                slots={"headline": CalloutBlock(body="too long text")},
+            )
+        ],
     )
     violations = validate_content(deck, reg)
     assert any(v.field == "maxChars" for v in violations)

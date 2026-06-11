@@ -963,7 +963,7 @@ DEFAULT_TEMPLATES: list[BaseTemplate] = [
 ]
 
 
-def register_defaults(registry: "TemplateRegistry") -> None:
+def register_defaults(registry: TemplateRegistry) -> None:
     """Register all 23 default catalog templates into a TemplateRegistry."""
     for template in DEFAULT_TEMPLATES:
         registry.register(template)
