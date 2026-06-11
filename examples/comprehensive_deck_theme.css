@@ -1,0 +1,228 @@
+/*
+ * comprehensive_deck_theme.css
+ * WWDC-inspired light theme for decko-py comprehensive example.
+ * Loaded via HtmlRenderer(extra_css_files=[...]) — not from CDN.
+ *
+ * Replaces decko-theme-midnight.css entirely.
+ * decko-base.css + decko-templates.css still load from CDN.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Instrument+Serif:ital@1&display=swap');
+
+/* ── Design tokens ───────────────────────────────────────────── */
+
+:root {
+  --decko-color-accent:      #0066FF;
+  --decko-color-background:  #ffffff;
+  --decko-color-surface:     #f5f5f7;
+  --decko-color-text:        #1d1d1f;
+  --decko-color-text-muted:  #6e6e73;
+  --decko-font-display:      'Bricolage Grotesque', system-ui, sans-serif;
+  --decko-font-body:         'Plus Jakarta Sans', system-ui, sans-serif;
+  --decko-font-mono:         'JetBrains Mono', 'Courier New', monospace;
+  --decko-spacing-slide:     3.75rem;
+  --decko-radius-card:       1rem;
+  --decko-motion-intensity:  expressive;
+}
+
+/* ── Body / root ─────────────────────────────────────────────── */
+
+body { background: #f0f0f5; }
+
+/* ── Navigation (frosted glass) ──────────────────────────────── */
+
+#decko-nav {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#decko-nav button { color: #1d1d1f; }
+#decko-nav button:hover { background: rgba(0, 102, 255, 0.07); }
+#decko-counter { color: #6e6e73; }
+
+/* ── Ghost text: title slide ─────────────────────────────────── */
+
+[data-template="title-slide"] { overflow: hidden; }
+
+[data-template="title-slide"]::before {
+  content: "decko";
+  position: absolute;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 38vw;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  color: rgba(0, 0, 0, 0.04);
+  top: -0.05em;
+  right: -0.06em;
+  pointer-events: none;
+  z-index: 0;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+
+[data-template="title-slide"] .decko-slot { position: relative; z-index: 1; }
+
+/* ── Ghost text: section-break ───────────────────────────────── */
+
+[data-template="section-break"] { overflow: hidden; }
+
+[data-template="section-break"]::after {
+  content: "//";
+  position: absolute;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 70vw;
+  font-weight: 800;
+  letter-spacing: -0.08em;
+  line-height: 0.8;
+  color: rgba(0, 0, 0, 0.03);
+  bottom: -0.25em;
+  left: -0.05em;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-template="section-break"] .decko-slot { position: relative; z-index: 1; }
+
+/* ── Ghost text: quote ───────────────────────────────────────── */
+
+[data-template="quote"] { overflow: hidden; }
+
+[data-template="quote"]::before {
+  content: '"';
+  position: absolute;
+  font-family: 'Instrument Serif', serif;
+  font-size: 80vw;
+  font-style: italic;
+  line-height: 0.7;
+  color: rgba(0, 0, 0, 0.04);
+  top: -0.15em;
+  left: -0.05em;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-template="quote"] .decko-slot { position: relative; z-index: 1; }
+
+/* ── Ghost text: closing ─────────────────────────────────────── */
+
+[data-template="closing"] { overflow: hidden; }
+
+[data-template="closing"]::before {
+  content: "→";
+  position: absolute;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 55vw;
+  font-weight: 800;
+  color: rgba(0, 102, 255, 0.05);
+  line-height: 1;
+  bottom: -0.2em;
+  right: -0.1em;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-template="closing"] .decko-slot { position: relative; z-index: 1; }
+
+/* ── Code blocks ─────────────────────────────────────────────── */
+
+.decko-code {
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+/* ── Table ───────────────────────────────────────────────────── */
+
+.decko-table { border-collapse: separate; border-spacing: 0; }
+
+.decko-table th {
+  border-bottom: 2px solid var(--decko-color-accent);
+  background: #f5f5f7;
+  font-size: clamp(0.6rem, 1.1vw, 0.8rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6e6e73;
+  font-weight: 600;
+}
+
+.decko-table td { border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.decko-table tr:last-child td { border-bottom: none; }
+.decko-table tbody tr:hover td { background: rgba(0, 102, 255, 0.025); }
+
+/* ── Metric cards ────────────────────────────────────────────── */
+
+.decko-metric {
+  background: #f5f5f7;
+  border-color: rgba(0, 102, 255, 0.18);
+}
+
+.decko-metric__value { color: var(--decko-color-accent); }
+
+/* ── Callout ─────────────────────────────────────────────────── */
+
+.decko-callout {
+  background: #f5f5f7;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.decko-callout__body { color: #1d1d1f; }
+.decko-callout--info    { color: #0066FF; }
+.decko-callout--success { color: #34c759; }
+.decko-callout--warning { color: #ff9f0a; }
+.decko-callout--danger  { color: #ff375f; }
+
+/* ── Divider ─────────────────────────────────────────────────── */
+
+.decko-divider { border-top-color: rgba(0, 0, 0, 0.08); }
+
+/* ── Terminal: title on top ──────────────────────────────────── */
+
+[data-template="terminal"] [data-slot="title"] { order: -1; }
+[data-template="terminal"] [data-slot="code"]  { flex: 1; }
+
+/* ── Timeline: horizontal 4-column ──────────────────────────── */
+
+[data-template="timeline"].decko-slide--active,
+[data-template="timeline"].decko-slide {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-areas: "title title title title" "s1 s2 s3 s4";
+  gap: 2rem 1.25rem;
+  height: 100%;
+}
+
+[data-template="timeline"] [data-slot="title"]  { grid-area: title; }
+[data-template="timeline"] [data-slot="step-1"] { grid-area: s1; }
+[data-template="timeline"] [data-slot="step-2"] { grid-area: s2; }
+[data-template="timeline"] [data-slot="step-3"] { grid-area: s3; }
+[data-template="timeline"] [data-slot="step-4"] { grid-area: s4; }
+[data-template="timeline"] [data-slot^="step-"] .decko-callout { height: 100%; }
+
+/* ── Testimonial grid: 3-column ─────────────────────────────── */
+
+[data-template="testimonial-grid"].decko-slide--active,
+[data-template="testimonial-grid"].decko-slide {
+  display: grid;
+  grid-template-areas: "title title title" "t1 t2 t3";
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem 2rem;
+  height: 100%;
+}
+
+[data-template="testimonial-grid"] [data-slot="title"]         { grid-area: title; }
+[data-template="testimonial-grid"] [data-slot="testimonial-1"] { grid-area: t1; }
+[data-template="testimonial-grid"] [data-slot="testimonial-2"] { grid-area: t2; }
+[data-template="testimonial-grid"] [data-slot="testimonial-3"] { grid-area: t3; }
+
+[data-template="testimonial-grid"] [data-slot^="testimonial-"] {
+  background: #f5f5f7;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: var(--decko-radius-card);
+  padding: 2rem;
+  font-style: italic;
+  align-self: stretch;
+}

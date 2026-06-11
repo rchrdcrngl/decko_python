@@ -66,7 +66,7 @@ def test_render_custom_theme_has_css_vars():
     )
     html = HtmlRenderer().render(deck)
     assert ":root" in html
-    assert "--decko-accent: #ff0000" in html
+    assert "--decko-color-accent: #ff0000" in html
 
 
 def test_render_builtin_theme_with_token_override_has_css_vars():
@@ -76,7 +76,7 @@ def test_render_builtin_theme_with_token_override_has_css_vars():
         slides=[Slide(template_id="t", slots={"m": TextBlock(content="x")})],
     )
     html = HtmlRenderer().render(deck)
-    assert "--decko-accent: #123456" in html
+    assert "--decko-color-accent: #123456" in html
 
 
 def test_render_extra_css_url():

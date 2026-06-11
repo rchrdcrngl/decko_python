@@ -3,6 +3,7 @@
 Output: comprehensive_deck.html
 """
 
+from pathlib import Path
 from typing import Literal, Union
 
 from decko_py import (
@@ -216,13 +217,7 @@ deck_html = (
         date="2026-06-11",
         org="Decko",
     )
-    .theme(
-        "midnight",
-        tokens={
-            "colorAccent": "#7c3aed",
-            "motionIntensity": "expressive",
-        },
-    )
+    .theme("custom-light")
     # ── 1. TITLE SLIDE ──────────────────────────────────────────────────────────
     .slide(
         TitleSlide(
@@ -231,6 +226,13 @@ deck_html = (
             eyebrow="Decko Platform · 2026",
             ambient=SlideAmbient(type="particles", intensity="medium"),
             transition=FadeTransition(duration=0.6),
+            background=GradientBackground(
+                value=(
+                    "linear-gradient(225deg, #f7e9f3 0.000%, #e7f3ff 16.667%,"
+                    " #ddfaff 33.333%, #e5fbeb 50.000%, #f5f6dc 66.667%,"
+                    " #fbede0 83.333%, #f0e3f4 100.000%)"
+                )
+            ),
             notes="Welcome slide. Walk through the full template catalog.",
         )
     )
@@ -249,6 +251,7 @@ deck_html = (
                     ListItem(text="Custom templates"),
                 ],
             ),
+            background=ColorBackground(value="#ffffff"),
         )
     )
     # ── 3. SECTION BREAK — Narrative ────────────────────────────────────────────
@@ -664,42 +667,12 @@ deck_html = (
             notes="End on a clear CTA. Leave PyPI install command visible.",
         )
     )
-    .render_html(registry=registry)
+    .render_html(
+        registry=registry,
+        extra_css_files=[Path(__file__).parent / "comprehensive_deck_theme.css"],
+    )
 )
 
-CUSTOM_CSS = """
-  <style>
-    /* testimonial-grid: three-column testimonial layout */
-    [data-template="testimonial-grid"] [data-slot] {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 2rem;
-    }
-    [data-template="testimonial-grid"] [data-slot="testimonial-1"],
-    [data-template="testimonial-grid"] [data-slot="testimonial-2"],
-    [data-template="testimonial-grid"] [data-slot="testimonial-3"] {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      font-style: italic;
-    }
-
-    /* timeline: horizontal stepped layout */
-    [data-template="timeline"] [data-slot^="step-"] {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-    [data-template="timeline"] {
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 2rem;
-    }
-  </style>"""
-
-deck_html = deck_html.replace("</head>", CUSTOM_CSS + "\n</head>", 1)
 
 output = "comprehensive_deck.html"
 with open(output, "w", encoding="utf-8") as f:

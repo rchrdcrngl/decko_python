@@ -99,17 +99,17 @@ class HtmlRenderer:
 
     def _tokens_to_css_vars(self, tokens: dict) -> str:  # type: ignore[type-arg]
         mapping = {
-            "colorAccent": "--decko-accent",
-            "colorBackground": "--decko-bg",
-            "colorSurface": "--decko-surface",
-            "colorText": "--decko-text",
-            "colorTextMuted": "--decko-text-muted",
+            "colorAccent": "--decko-color-accent",
+            "colorBackground": "--decko-color-background",
+            "colorSurface": "--decko-color-surface",
+            "colorText": "--decko-color-text",
+            "colorTextMuted": "--decko-color-text-muted",
             "fontDisplay": "--decko-font-display",
             "fontBody": "--decko-font-body",
             "fontMono": "--decko-font-mono",
             "spacingSlide": "--decko-spacing-slide",
             "radiusCard": "--decko-radius-card",
-            "motionIntensity": "--decko-motion",
+            "motionIntensity": "--decko-motion-intensity",
         }
         vars_str = "\n".join(
             f"  {css_var}: {tokens[ts_key]};"
