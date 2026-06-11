@@ -323,6 +323,7 @@ class MetricTrioSlide(TypedSlide):
     metric_2: MetricBlock
     metric_3: MetricBlock
     title: Union[TextSlot, None] = None
+    footnote: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
@@ -332,6 +333,8 @@ class MetricTrioSlide(TypedSlide):
         }
         if self.title is not None:
             s["title"] = self.title
+        if self.footnote is not None:
+            s["footnote"] = self.footnote
         return s
 
 
@@ -424,16 +427,16 @@ class ImageGridSlide(TypedSlide):
 
 class ComparisonSlide(TypedSlide):
     template_id: Literal["comparison"] = "comparison"
-    left: ComparisonContent
-    right: ComparisonContent
+    before: ComparisonContent
+    after: ComparisonContent
     title: Union[TextSlot, None] = None
     left_label: Union[TextSlot, None] = None
     right_label: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
-            "left": self.left,
-            "right": self.right,
+            "before": self.before,
+            "after": self.after,
         }
         if self.title is not None:
             s["title"] = self.title

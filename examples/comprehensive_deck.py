@@ -1,8 +1,9 @@
-"""comprehensive_deck.py — All 23 built-in templates + 2 custom templates → comprehensive_deck.html"""
+"""comprehensive_deck.py — All 23 built-in templates + 2 custom templates.
 
-from typing import Annotated, Literal, Union
+Output: comprehensive_deck.html
+"""
 
-from pydantic import BeforeValidator
+from typing import Literal, Union
 
 from decko_py import (
     AgendaSlide,
@@ -34,27 +35,32 @@ from decko_py import (
     SingleColumnSlide,
     TableBlock,
     TableSlide,
+    TemplateRegistry,
     TerminalSlide,
     TextBlock,
     ThreeUpSlide,
     TitleSlide,
     TwoColumnSlide,
     register_defaults,
-    TemplateRegistry,
 )
-from decko_py.models.animation import BlockAnimation
-from decko_py.models.blocks import KineticTextBlock, DividerBlock
-from decko_py.models.rich_text import ListItem, InlineNode
+from decko_py.models.blocks import Block, KineticTextBlock
+from decko_py.models.rich_text import ListItem
 from decko_py.models.slide import (
     ColorBackground,
     GradientBackground,
     SlideAmbient,
     SlotStyle,
 )
-from decko_py.models.template import AiHints, BaseTemplate, ContentBudget, TemplateSlot
+from decko_py.models.template import (
+    AiHints,
+    BaseTemplate,
+    ContentBudget,
+    LayoutMode,
+    TemplateCategory,
+    TemplateSlot,
+)
 from decko_py.models.transition import FadeTransition, PanTransition
 from decko_py.models.typed_slides import TextSlot, TypedSlide
-
 
 # ── Custom templates ──────────────────────────────────────────────────────────
 
@@ -62,7 +68,7 @@ from decko_py.models.typed_slides import TextSlot, TypedSlide
 class TestimonialGridTemplate(BaseTemplate):
     id: str = "testimonial-grid"
     name: str = "Testimonial Grid"
-    category: str = "narrative"
+    category: TemplateCategory = "narrative"
     description: str = "Three customer testimonials arranged in a grid."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -90,7 +96,7 @@ class TestimonialGridTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=80),
         ),
     ]
-    layout_modes: list[str] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto", "centered"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show three customer or user testimonials side by side.",
         good_for=["social proof", "customer success", "reviews"],
@@ -102,7 +108,7 @@ class TestimonialGridTemplate(BaseTemplate):
 class TimelineTemplate(BaseTemplate):
     id: str = "timeline"
     name: str = "Timeline"
-    category: str = "content"
+    category: TemplateCategory = "content"
     description: str = "Step-by-step timeline with 2–4 steps and a title."
     slots: list[TemplateSlot] = [
         TemplateSlot(
@@ -136,7 +142,7 @@ class TimelineTemplate(BaseTemplate):
             content_budget=ContentBudget(max_chars=200),
         ),
     ]
-    layout_modes: list[str] = ["auto", "top-heavy"]
+    layout_modes: list[LayoutMode] = ["auto", "top-heavy"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show a sequential process, roadmap, or how-it-works flow.",
         good_for=["onboarding flows", "product roadmaps", "step-by-step guides"],
@@ -155,8 +161,8 @@ class TestimonialGridSlide(TypedSlide):
     testimonial_3: TextSlot
     title: Union[TextSlot, None] = None
 
-    def _build_slots(self):
-        s = {
+    def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
+        s: dict[str, Union[Block, list[Block]]] = {
             "testimonial-1": self.testimonial_1,
             "testimonial-2": self.testimonial_2,
             "testimonial-3": self.testimonial_3,
@@ -174,8 +180,8 @@ class TimelineSlide(TypedSlide):
     step_3: Union[TextBlock, CalloutBlock, None] = None
     step_4: Union[TextBlock, CalloutBlock, None] = None
 
-    def _build_slots(self):
-        s = {
+    def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
+        s: dict[str, Union[Block, list[Block]]] = {
             "title": self.title,
             "step-1": self.step_1,
             "step-2": self.step_2,
@@ -370,7 +376,9 @@ deck_html = (
         SectionBreakSlide(
             title="Data Templates",
             label="Part III",
-            background=GradientBackground(value="linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 100%)"),
+            background=GradientBackground(
+                value="linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 100%)"
+            ),
         )
     )
     # ── 12. BIG METRIC ──────────────────────────────────────────────────────────
@@ -490,12 +498,12 @@ deck_html = (
             title="Before and after",
             left_label="Raw Slide dict",
             right_label="TypedSlide class",
-            left=TextBlock(
+            before=TextBlock(
                 display="body",
                 content='Slide(template_id="title-slide", '
                 'slots={"headline": TextBlock(content="Hello")})',
             ),
-            right=TextBlock(
+            after=TextBlock(
                 display="body",
                 content='TitleSlide(headline="Hello")',
             ),
@@ -509,6 +517,12 @@ deck_html = (
             word_3=KineticTextBlock(content="Ship", font_size="4rem", color="#c4b5fd"),
             caption="The Decko workflow",
             ambient=SlideAmbient(type="orbs", intensity="medium"),
+            slot_styles={
+                "word-1": SlotStyle(position="absolute", top="15%", left="8%"),
+                "word-2": SlotStyle(position="absolute", top="42%", right="10%"),
+                "word-3": SlotStyle(position="absolute", bottom="18%", left="30%"),
+                "caption": SlotStyle(position="absolute", bottom="6%", right="6%"),
+            },
         )
     )
     # ── 22. KINETIC HERO ────────────────────────────────────────────────────────
@@ -520,6 +534,13 @@ deck_html = (
             ghost_bg=KineticTextBlock(content="DECKO", ghost=True, color="#ffffff"),
             tagline="From Python to polished — in seconds.",
             ambient=SlideAmbient(type="constellation", intensity="high"),
+            slot_styles={
+                "ghost-bg": SlotStyle(position="absolute", top="50%", left="50%"),
+                "word-top": SlotStyle(position="absolute", top="8%", left="5%"),
+                "word-mid": SlotStyle(position="absolute", top="38%", right="5%"),
+                "word-bottom": SlotStyle(position="absolute", bottom="8%", left="15%"),
+                "tagline": SlotStyle(position="absolute", bottom="4%", right="4%"),
+            },
         )
     )
     # ── 23. SECTION BREAK — Technical ───────────────────────────────────────────
@@ -646,9 +667,43 @@ deck_html = (
     .render_html(registry=registry)
 )
 
+CUSTOM_CSS = """
+  <style>
+    /* testimonial-grid: three-column testimonial layout */
+    [data-template="testimonial-grid"] [data-slot] {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+    }
+    [data-template="testimonial-grid"] [data-slot="testimonial-1"],
+    [data-template="testimonial-grid"] [data-slot="testimonial-2"],
+    [data-template="testimonial-grid"] [data-slot="testimonial-3"] {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      font-style: italic;
+    }
+
+    /* timeline: horizontal stepped layout */
+    [data-template="timeline"] [data-slot^="step-"] {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    [data-template="timeline"] {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 2rem;
+    }
+  </style>"""
+
+deck_html = deck_html.replace("</head>", CUSTOM_CSS + "\n</head>", 1)
+
 output = "comprehensive_deck.html"
 with open(output, "w", encoding="utf-8") as f:
     f.write(deck_html)
 
 print(f"Saved → {output}")
-print(f"Slides: 29 (23 built-in templates + 2 custom + section breaks)")
+print("Slides: 29 (23 built-in templates + 2 custom + section breaks)")
