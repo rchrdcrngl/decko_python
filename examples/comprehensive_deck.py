@@ -47,7 +47,6 @@ from decko_py import (
 from decko_py.models.blocks import Block, KineticTextBlock
 from decko_py.models.rich_text import ListItem
 from decko_py.models.slide import (
-    ColorBackground,
     GradientBackground,
     SlideAmbient,
     SlotStyle,
@@ -251,7 +250,6 @@ deck_html = (
                     ListItem(text="Custom templates"),
                 ],
             ),
-            background=ColorBackground(value="#ffffff"),
         )
     )
     # ── 3. SECTION BREAK — Narrative ────────────────────────────────────────────
@@ -260,7 +258,6 @@ deck_html = (
             title="Narrative Templates",
             label="Part I",
             description="Set the stage, open sections, close with impact.",
-            background=ColorBackground(value="#0f0f1a"),
             transition=PanTransition(direction="right"),
         )
     )
@@ -293,7 +290,6 @@ deck_html = (
         SectionBreakSlide(
             title="Content Templates",
             label="Part II",
-            background=ColorBackground(value="#0d1117"),
         )
     )
     # ── 7. SINGLE COLUMN ────────────────────────────────────────────────────────
@@ -379,9 +375,6 @@ deck_html = (
         SectionBreakSlide(
             title="Data Templates",
             label="Part III",
-            background=GradientBackground(
-                value="linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 100%)"
-            ),
         )
     )
     # ── 12. BIG METRIC ──────────────────────────────────────────────────────────
@@ -464,7 +457,6 @@ deck_html = (
         SectionBreakSlide(
             title="Visual Templates",
             label="Part IV",
-            background=ColorBackground(value="#0a0a14"),
         )
     )
     # ── 17. FULL BLEED MEDIA ────────────────────────────────────────────────────
@@ -531,10 +523,11 @@ deck_html = (
     # ── 22. KINETIC HERO ────────────────────────────────────────────────────────
     .slide(
         KineticHeroSlide(
-            word_top=KineticTextBlock(content="CODE", font_size="12rem", color="#7c3aed"),
-            word_mid=KineticTextBlock(content="DECK", font_size="12rem", color="#ffffff"),
-            word_bottom=KineticTextBlock(content="SHIP", font_size="12rem", color="#a78bfa"),
-            ghost_bg=KineticTextBlock(content="DECKO", ghost=True, color="#ffffff"),
+            word_top=KineticTextBlock(content="CODE", font_size="12rem", color="#1d1d1f"),
+            word_mid=KineticTextBlock(content="DECK", font_size="12rem", color="#0066FF"),
+            word_bottom=KineticTextBlock(
+                content="SHIP", font_size="12rem", color="#7c3aed", ghost=True
+            ),
             tagline="From Python to polished — in seconds.",
             ambient=SlideAmbient(type="constellation", intensity="high"),
             slot_styles={
@@ -551,7 +544,6 @@ deck_html = (
         SectionBreakSlide(
             title="Technical Templates",
             label="Part V",
-            background=ColorBackground(value="#0d1117"),
         )
     )
     # ── 24. CODE WALKTHROUGH ────────────────────────────────────────────────────
@@ -656,7 +648,7 @@ deck_html = (
             headline="Start building with Decko",
             cta="pip install decko-py",
             contact=ListBlock(
-                display="bullets",
+                display="pill-row",
                 items=[
                     ListItem(text="github.com/rchrdcrngl/decko_python"),
                     ListItem(text="PyPI: decko-py"),
