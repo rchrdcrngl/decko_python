@@ -50,3 +50,7 @@ class TemplateDefinition(BaseModel):
     slots: list[TemplateSlot]
     layout_modes: list[LayoutMode]
     ai_hints: AiHints
+
+
+class BaseTemplate(TemplateDefinition):
+    """Base for slide templates with hardcoded `id` defaults."""

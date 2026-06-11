@@ -4,7 +4,7 @@ from decko_py.models.slide import Slide
 
 
 def make_slide(content="Hello"):
-    return Slide(template_id="title", slots={"headline": TextBlock(content=content)})
+    return Slide(template_id="title-slide", slots={"headline": TextBlock(content=content)})
 
 
 def test_builder_defaults():

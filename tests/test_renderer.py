@@ -8,7 +8,7 @@ from decko_py.renderer import HtmlRenderer
 
 def make_deck(theme_name="midnight", **slide_kwargs):
     slide = Slide(
-        template_id="title",
+        template_id="title-slide",
         slots={"headline": TextBlock(content="Hello")},
         **slide_kwargs,
     )
@@ -128,7 +128,7 @@ def test_render_ssr_mode():
     html = HtmlRenderer(mode="ssr").render(deck)
     assert 'data-render-mode="csr"' not in html
     assert 'class="decko-slide"' in html
-    assert 'data-template-id="title"' in html
+    assert 'data-template-id="title-slide"' in html
 
 
 def test_render_ssr_transition():

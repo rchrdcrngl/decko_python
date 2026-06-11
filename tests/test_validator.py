@@ -11,7 +11,7 @@ def make_deck_with_block(block, template_registry):
         Deck(
             meta=DeckMeta(title="Test"),
             theme=DeckTheme(name="midnight"),
-            slides=[Slide(template_id="title", slots={"headline": block})],
+            slides=[Slide(template_id="title-slide", slots={"headline": block})],
         ),
         template_registry,
     )
@@ -52,7 +52,7 @@ def test_line_violation(template_registry):
     reg = TemplateRegistry()
     reg.register(
         TemplateDefinition(
-            id="title",
+            id="title-slide",
             name="Title",
             category="narrative",
             description="x",
@@ -71,7 +71,7 @@ def test_line_violation(template_registry):
     deck = Deck(
         meta=DeckMeta(title="x"),
         theme=DeckTheme(name="midnight"),
-        slides=[Slide(template_id="title", slots={"headline": TextBlock(content="a\nb\nc")})],
+        slides=[Slide(template_id="title-slide", slots={"headline": TextBlock(content="a\nb\nc")})],
     )
     violations = validate_content(deck, reg)
     assert any(v.field == "maxLines" for v in violations)
@@ -95,7 +95,7 @@ def test_callout_body_violation(template_registry):
     reg = TemplateRegistry()
     reg.register(
         TemplateDefinition(
-            id="title",
+            id="title-slide",
             name="Title",
             category="narrative",
             description="x",
@@ -114,7 +114,7 @@ def test_callout_body_violation(template_registry):
     deck = Deck(
         meta=DeckMeta(title="x"),
         theme=DeckTheme(name="midnight"),
-        slides=[Slide(template_id="title", slots={"headline": CalloutBlock(body="too long text")})],
+        slides=[Slide(template_id="title-slide", slots={"headline": CalloutBlock(body="too long text")})],
     )
     violations = validate_content(deck, reg)
     assert any(v.field == "maxChars" for v in violations)

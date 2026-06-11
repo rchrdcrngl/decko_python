@@ -2,12 +2,17 @@
 
 from decko_py import (
     DeckBuilder,
-    Slide,
-    TextBlock,
+    HeaderBodySlide,
     ListBlock,
-    CalloutBlock,
+    TextBlock,
+    TitleSlide,
+    TemplateRegistry,
+    register_defaults,
 )
 from decko_py.models.rich_text import ListItem
+
+registry = TemplateRegistry()
+register_defaults(registry)
 
 deck_html = (
     DeckBuilder()
@@ -18,43 +23,32 @@ deck_html = (
     )
     .theme("midnight")
     .slide(
-        Slide(
-            template_id="title",
-            slots={
-                "headline": TextBlock(
-                    display="hero",
-                    content="Getting Started with Decko",
-                ),
-                "subheading": TextBlock(
-                    display="subheading",
-                    content="Build beautiful presentations in Python",
-                ),
-            },
+        TitleSlide(
+            headline=TextBlock(
+                display="hero",
+                content="Getting Started with Decko",
+            ),
+            subtitle=TextBlock(
+                display="subheading",
+                content="Build beautiful presentations in Python",
+            ),
         )
     )
     .slide(
-        Slide(
-            template_id="content",
-            slots={
-                "headline": TextBlock(
-                    display="heading",
-                    content="Why Decko?",
-                ),
-                "body": ListBlock(
-                    display="bullets",
-                    items=[
-                        ListItem(text="Compose decks from Python or data pipelines"),
-                        ListItem(text="Pydantic models — fully typed and validated"),
-                        ListItem(text="Render to static HTML with CDN runtime"),
-                        ListItem(text="AI-friendly structured output"),
-                    ],
-                ),
-                "callout": CalloutBlock(
-                    display="info",
-                    title="Tip",
-                    body="Use DeckBuilder for a fluent API, or construct Deck directly.",
-                ),
-            },
+        HeaderBodySlide(
+            title=TextBlock(
+                display="heading",
+                content="Why Decko?",
+            ),
+            body=ListBlock(
+                display="bullets",
+                items=[
+                    ListItem(text="Compose decks from Python or data pipelines"),
+                    ListItem(text="Pydantic models — fully typed and validated"),
+                    ListItem(text="Render to static HTML with CDN runtime"),
+                    ListItem(text="AI-friendly structured output"),
+                ],
+            ),
         )
     )
     .render_html()

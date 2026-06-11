@@ -58,7 +58,7 @@ def chart_block():
 
 @pytest.fixture
 def simple_slide(text_block):
-    return Slide(template_id="title", slots={"headline": text_block})
+    return Slide(template_id="title-slide", slots={"headline": text_block})
 
 
 @pytest.fixture
@@ -77,8 +77,8 @@ def template_registry():
     reg = TemplateRegistry()
     reg.register(
         TemplateDefinition(
-            id="title",
-            name="Title",
+            id="title-slide",
+            name="Title Slide",
             category="narrative",
             description="A title slide",
             slots=[
@@ -94,7 +94,7 @@ def template_registry():
                 when_to_use="Opening slide",
                 good_for=["intros"],
                 avoid=["data-heavy content"],
-                suggested_follow_up=["content"],
+                suggested_follow_up=["header-body"],
             ),
         )
     )

@@ -17,7 +17,7 @@ from decko_py.models.transition import FadeTransition
 
 
 def test_slide_minimal(simple_slide):
-    assert simple_slide.template_id == "title"
+    assert simple_slide.template_id == "title-slide"
     assert "headline" in simple_slide.slots
 
 
@@ -119,7 +119,7 @@ def test_deck_version_default(simple_deck):
 def test_deck_serialization(simple_deck):
     json_str = simple_deck.model_dump_json(by_alias=True)
     assert '"version":"1"' in json_str
-    assert '"templateId":"title"' in json_str
+    assert '"templateId":"title-slide"' in json_str
 
 
 def test_deck_variables():

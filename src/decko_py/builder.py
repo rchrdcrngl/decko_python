@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 from decko_py.cdn import CdnConfig
 from decko_py.models.slide import Deck, DeckMeta, Slide
 from decko_py.models.theme import DeckTheme
+
+if TYPE_CHECKING:
+    from decko_py.models.typed_slides import TypedSlide
 
 
 class DeckBuilder:
@@ -42,8 +45,13 @@ class DeckBuilder:
         self._variables[key] = value
         return self
 
-    def slide(self, slide: Slide) -> DeckBuilder:
-        self._slides.append(slide)
+    def slide(self, slide: Union[Slide, "TypedSlide"]) -> DeckBuilder:
+        from decko_py.models.typed_slides import TypedSlide as _TypedSlide
+
+        if isinstance(slide, _TypedSlide):
+            self._slides.append(slide.to_slide())
+        else:
+            self._slides.append(slide)
         return self
 
     def build(self) -> Deck:

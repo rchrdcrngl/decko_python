@@ -1,17 +1,22 @@
 """Rich text, animations, transitions, custom theme tokens → rich_deck.html"""
 
 from decko_py import (
-    DeckBuilder,
-    Slide,
-    TextBlock,
-    CodeBlock,
     CalloutBlock,
-    DeckTheme,
+    CodeBlock,
+    DeckBuilder,
+    HeaderBodySlide,
+    TextBlock,
+    TitleSlide,
+    TemplateRegistry,
+    register_defaults,
 )
 from decko_py.models.animation import BlockAnimation, AnimatableProps
 from decko_py.models.rich_text import InlineNode, InlineLink, InlineAnimation
 from decko_py.models.transition import FadeTransition, PanTransition
 from decko_py.models.slide import SlideAmbient
+
+registry = TemplateRegistry()
+register_defaults(registry)
 
 deck_html = (
     DeckBuilder()
@@ -24,83 +29,71 @@ deck_html = (
         },
     )
     .slide(
-        Slide(
-            template_id="title",
+        TitleSlide(
             ambient=SlideAmbient(type="particles", intensity="medium"),
-            slots={
-                "headline": TextBlock(
-                    display="hero",
-                    content=[
-                        InlineNode(text="Rich Text ", bold=True),
-                        InlineNode(text="& ", color="#a78bfa"),
-                        InlineNode(
-                            text="Animations",
-                            bold=True,
-                            animate=InlineAnimation(type="typewriter", delay=0.5),
-                        ),
-                    ],
-                    animation=BlockAnimation(
-                        preset="fade-in",
-                        duration=0.8,
-                        delay=0.2,
+            headline=TextBlock(
+                display="hero",
+                content=[
+                    InlineNode(text="Rich Text ", bold=True),
+                    InlineNode(text="& ", color="#a78bfa"),
+                    InlineNode(
+                        text="Animations",
+                        bold=True,
+                        animate=InlineAnimation(type="typewriter", delay=0.5),
                     ),
+                ],
+                animation=BlockAnimation(
+                    preset="fade-in",
+                    duration=0.8,
+                    delay=0.2,
                 ),
-            },
+            ),
             transition=FadeTransition(duration=0.4),
         )
     )
     .slide(
-        Slide(
-            template_id="content",
-            slots={
-                "headline": TextBlock(
-                    display="heading",
-                    content=[
-                        InlineNode(text="Inline formatting: "),
-                        InlineNode(text="bold", bold=True),
-                        InlineNode(text=", "),
-                        InlineNode(text="italic", italic=True),
-                        InlineNode(text=", "),
-                        InlineNode(text="code", code=True),
-                        InlineNode(text=", "),
-                        InlineNode(
-                            text="link",
-                            link=InlineLink(href="https://example.com", target="_blank"),
-                        ),
-                    ],
-                ),
-                "body": CodeBlock(
-                    display="block",
-                    language="python",
-                    filename="example.py",
-                    highlight=[1, 4],
-                    code=(
-                        "from decko_py import DeckBuilder, TextBlock, Slide\n"
-                        "\n"
-                        "html = (\n"
-                        "    DeckBuilder()\n"
-                        '    .meta("My Deck")\n'
-                        '    .theme("midnight")\n'
-                        "    .slide(Slide(\n"
-                        '        template_id="title",\n'
-                        '        slots={"headline": TextBlock(content="Hello!")},\n'
-                        "    ))\n"
-                        "    .render_html()\n"
-                        ")"
+        HeaderBodySlide(
+            title=TextBlock(
+                display="heading",
+                content=[
+                    InlineNode(text="Inline formatting: "),
+                    InlineNode(text="bold", bold=True),
+                    InlineNode(text=", "),
+                    InlineNode(text="italic", italic=True),
+                    InlineNode(text=", "),
+                    InlineNode(text="code", code=True),
+                    InlineNode(text=", "),
+                    InlineNode(
+                        text="link",
+                        link=InlineLink(href="https://example.com", target="_blank"),
                     ),
-                    animation=BlockAnimation(
-                        from_props=AnimatableProps(opacity=0.0, y=30.0),
-                        to_props=AnimatableProps(opacity=1.0, y=0.0),
-                        duration=0.6,
-                        delay=0.3,
-                    ),
+                ],
+            ),
+            body=CodeBlock(
+                display="block",
+                language="python",
+                filename="example.py",
+                highlight=[1, 4],
+                code=(
+                    "from decko_py import DeckBuilder, TextBlock, TitleSlide\n"
+                    "\n"
+                    "html = (\n"
+                    "    DeckBuilder()\n"
+                    '    .meta("My Deck")\n'
+                    '    .theme("midnight")\n'
+                    "    .slide(TitleSlide(\n"
+                    '        headline=TextBlock(content="Hello!"),\n'
+                    "    ))\n"
+                    "    .render_html()\n"
+                    ")"
                 ),
-                "callout": CalloutBlock(
-                    display="success",
-                    title="Pro tip",
-                    body="Use highlight=[1, 4] to draw attention to specific lines.",
+                animation=BlockAnimation(
+                    from_props=AnimatableProps(opacity=0.0, y=30.0),
+                    to_props=AnimatableProps(opacity=1.0, y=0.0),
+                    duration=0.6,
+                    delay=0.3,
                 ),
-            },
+            ),
             transition=PanTransition(direction="left"),
         )
     )
