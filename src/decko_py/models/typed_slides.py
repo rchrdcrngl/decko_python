@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Literal, Union
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Union
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, BeforeValidator, ConfigDict
 from pydantic.alias_generators import to_camel
 
 from decko_py.models.animation import BlockAnimation
@@ -23,6 +23,44 @@ from decko_py.models.composition import Composition
 from decko_py.models.slide import Slide, SlideAmbient, SlideBackground, SlotStyle
 from decko_py.models.transition import SlideTransition
 
+if TYPE_CHECKING:
+    from decko_py.models.template import BaseTemplate
+
+# ── String coercion helpers ───────────────────────────────────────────────────
+
+
+def _str_to_text(v: Any) -> Any:
+    if isinstance(v, str):
+        return TextBlock(content=v)
+    return v
+
+
+TextSlot = Annotated[TextBlock, BeforeValidator(_str_to_text)]
+
+SingleColumnBody = Annotated[
+    Union[TextBlock, ListBlock, CalloutBlock], BeforeValidator(_str_to_text)
+]
+TwoColumnContent = Annotated[
+    Union[TextBlock, ListBlock, CalloutBlock, MediaBlock], BeforeValidator(_str_to_text)
+]
+HeaderBodyContent = Annotated[
+    Union[TextBlock, ListBlock, CalloutBlock, CodeBlock, TableBlock],
+    BeforeValidator(_str_to_text),
+]
+ThreeUpContent = Annotated[
+    Union[TextBlock, ListBlock, CalloutBlock, MetricBlock], BeforeValidator(_str_to_text)
+]
+ComparisonContent = Annotated[
+    Union[MediaBlock, TextBlock, ListBlock], BeforeValidator(_str_to_text)
+]
+CodeAnnotation = Annotated[
+    Union[TextBlock, ListBlock, CalloutBlock], BeforeValidator(_str_to_text)
+]
+KineticWord = Annotated[
+    Union[KineticTextBlock, TextBlock], BeforeValidator(_str_to_text)
+]
+
+
 # ── Base ──────────────────────────────────────────────────────────────────────
 
 
@@ -40,7 +78,7 @@ class TypedSlide(BaseModel):
     ambient: Union[SlideAmbient, None] = None
     animations: Union[dict[str, BlockAnimation], None] = None
     slot_styles: Union[dict[str, SlotStyle], None] = None
-    speaker_notes: Union[str, None] = None
+    notes: Union[str, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         raise NotImplementedError
@@ -57,8 +95,37 @@ class TypedSlide(BaseModel):
             ambient=self.ambient,
             animations=self.animations,
             slot_styles=self.slot_styles,
-            notes=self.speaker_notes,
+            notes=self.notes,
         )
+
+    @classmethod
+    def definition(cls) -> Union["BaseTemplate", None]:
+        from decko_py.models.catalog import DEFAULT_TEMPLATES
+
+        field = cls.model_fields.get("template_id")
+        if field is None or field.default is None:
+            return None
+        tid = field.default
+        return next((t for t in DEFAULT_TEMPLATES if t.id == tid), None)
+
+    @classmethod
+    def slots_info(cls) -> None:
+        defn = cls.definition()
+        if defn is None:
+            print(f"{cls.__name__}: no catalog entry")
+            return
+        print(f"{cls.__name__} [{defn.id}]")
+        for slot in defn.slots:
+            req = "required" if slot.required else "optional"
+            accepts = "/".join(slot.accepts)
+            budget = slot.content_budget
+            extras = []
+            if budget.max_chars:
+                extras.append(f"max_chars={budget.max_chars}")
+            if budget.max_words:
+                extras.append(f"max_words={budget.max_words}")
+            extras_str = "  " + ", ".join(extras) if extras else ""
+            print(f"  {slot.id:<20} {req:<10} {accepts}{extras_str}")
 
 
 # ── Narrative ─────────────────────────────────────────────────────────────────
@@ -66,9 +133,9 @@ class TypedSlide(BaseModel):
 
 class TitleSlide(TypedSlide):
     template_id: Literal["title-slide"] = "title-slide"
-    headline: TextBlock
-    subtitle: Union[TextBlock, None] = None
-    eyebrow: Union[TextBlock, None] = None
+    headline: TextSlot
+    subtitle: Union[TextSlot, None] = None
+    eyebrow: Union[TextSlot, None] = None
     logo: Union[MediaBlock, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
@@ -84,9 +151,9 @@ class TitleSlide(TypedSlide):
 
 class SectionBreakSlide(TypedSlide):
     template_id: Literal["section-break"] = "section-break"
-    title: TextBlock
-    label: Union[TextBlock, None] = None
-    description: Union[TextBlock, None] = None
+    title: TextSlot
+    label: Union[TextSlot, None] = None
+    description: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {"title": self.title}
@@ -100,7 +167,7 @@ class SectionBreakSlide(TypedSlide):
 class AgendaSlide(TypedSlide):
     template_id: Literal["agenda"] = "agenda"
     items: ListBlock
-    title: Union[TextBlock, None] = None
+    title: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {"items": self.items}
@@ -111,8 +178,8 @@ class AgendaSlide(TypedSlide):
 
 class ClosingSlide(TypedSlide):
     template_id: Literal["closing"] = "closing"
-    headline: TextBlock
-    cta: Union[TextBlock, None] = None
+    headline: TextSlot
+    cta: Union[TextSlot, None] = None
     contact: Union[TextBlock, ListBlock, None] = None
     logo: Union[MediaBlock, None] = None
 
@@ -129,8 +196,8 @@ class ClosingSlide(TypedSlide):
 
 class QuoteSlide(TypedSlide):
     template_id: Literal["quote"] = "quote"
-    quote: TextBlock
-    attribution: Union[TextBlock, None] = None
+    quote: TextSlot
+    attribution: Union[TextSlot, None] = None
     avatar: Union[MediaBlock, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
@@ -144,15 +211,10 @@ class QuoteSlide(TypedSlide):
 
 # ── Content ───────────────────────────────────────────────────────────────────
 
-SingleColumnBody = Union[TextBlock, ListBlock, CalloutBlock]
-TwoColumnContent = Union[TextBlock, ListBlock, CalloutBlock, MediaBlock]
-HeaderBodyContent = Union[TextBlock, ListBlock, CalloutBlock, CodeBlock, TableBlock]
-ThreeUpContent = Union[TextBlock, ListBlock, CalloutBlock, MetricBlock]
-
 
 class SingleColumnSlide(TypedSlide):
     template_id: Literal["single-column"] = "single-column"
-    title: TextBlock
+    title: TextSlot
     body: SingleColumnBody
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
@@ -161,11 +223,11 @@ class SingleColumnSlide(TypedSlide):
 
 class TwoColumnSlide(TypedSlide):
     template_id: Literal["two-column"] = "two-column"
-    title: TextBlock
+    title: TextSlot
     left: TwoColumnContent
     right: TwoColumnContent
-    left_label: Union[TextBlock, None] = None
-    right_label: Union[TextBlock, None] = None
+    left_label: Union[TextSlot, None] = None
+    right_label: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
@@ -182,9 +244,9 @@ class TwoColumnSlide(TypedSlide):
 
 class HeaderBodySlide(TypedSlide):
     template_id: Literal["header-body"] = "header-body"
-    title: TextBlock
+    title: TextSlot
     body: HeaderBodyContent
-    subtitle: Union[TextBlock, None] = None
+    subtitle: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {"title": self.title, "body": self.body}
@@ -195,10 +257,10 @@ class HeaderBodySlide(TypedSlide):
 
 class BulletsMediaSlide(TypedSlide):
     template_id: Literal["bullets-media"] = "bullets-media"
-    title: TextBlock
+    title: TextSlot
     bullets: ListBlock
     media: MediaBlock
-    caption: Union[TextBlock, None] = None
+    caption: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
@@ -213,13 +275,13 @@ class BulletsMediaSlide(TypedSlide):
 
 class ThreeUpSlide(TypedSlide):
     template_id: Literal["three-up"] = "three-up"
-    title: TextBlock
+    title: TextSlot
     col_1: ThreeUpContent
     col_2: ThreeUpContent
     col_3: ThreeUpContent
-    col_1_label: Union[TextBlock, None] = None
-    col_2_label: Union[TextBlock, None] = None
-    col_3_label: Union[TextBlock, None] = None
+    col_1_label: Union[TextSlot, None] = None
+    col_2_label: Union[TextSlot, None] = None
+    col_3_label: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
@@ -243,8 +305,8 @@ class ThreeUpSlide(TypedSlide):
 class BigMetricSlide(TypedSlide):
     template_id: Literal["big-metric"] = "big-metric"
     metric: MetricBlock
-    eyebrow: Union[TextBlock, None] = None
-    context: Union[TextBlock, None] = None
+    eyebrow: Union[TextSlot, None] = None
+    context: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {"metric": self.metric}
@@ -260,7 +322,7 @@ class MetricTrioSlide(TypedSlide):
     metric_1: MetricBlock
     metric_2: MetricBlock
     metric_3: MetricBlock
-    title: Union[TextBlock, None] = None
+    title: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
@@ -275,7 +337,7 @@ class MetricTrioSlide(TypedSlide):
 
 class ChartCalloutSlide(TypedSlide):
     template_id: Literal["chart-callout"] = "chart-callout"
-    title: TextBlock
+    title: TextSlot
     chart: ChartBlock
     callout: Union[CalloutBlock, None] = None
 
@@ -291,9 +353,9 @@ class ChartCalloutSlide(TypedSlide):
 
 class TableSlide(TypedSlide):
     template_id: Literal["table-slide"] = "table-slide"
-    title: TextBlock
+    title: TextSlot
     table: TableBlock
-    footnote: Union[TextBlock, None] = None
+    footnote: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
@@ -307,15 +369,12 @@ class TableSlide(TypedSlide):
 
 # ── Visual ────────────────────────────────────────────────────────────────────
 
-KineticWord = Union[KineticTextBlock, TextBlock]
-ComparisonContent = Union[MediaBlock, TextBlock, ListBlock]
-
 
 class FullBleedMediaSlide(TypedSlide):
     template_id: Literal["full-bleed-media"] = "full-bleed-media"
     media: MediaBlock
-    overlay_text: Union[TextBlock, None] = None
-    caption: Union[TextBlock, None] = None
+    overlay_text: Union[TextSlot, None] = None
+    caption: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {"media": self.media}
@@ -329,8 +388,8 @@ class FullBleedMediaSlide(TypedSlide):
 class MediaCaptionSlide(TypedSlide):
     template_id: Literal["media-caption"] = "media-caption"
     media: MediaBlock
-    title: Union[TextBlock, None] = None
-    caption: Union[TextBlock, None] = None
+    title: Union[TextSlot, None] = None
+    caption: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {"media": self.media}
@@ -345,7 +404,7 @@ class ImageGridSlide(TypedSlide):
     template_id: Literal["image-grid"] = "image-grid"
     image_1: MediaBlock
     image_2: MediaBlock
-    title: Union[TextBlock, None] = None
+    title: Union[TextSlot, None] = None
     image_3: Union[MediaBlock, None] = None
     image_4: Union[MediaBlock, None] = None
 
@@ -367,9 +426,9 @@ class ComparisonSlide(TypedSlide):
     template_id: Literal["comparison"] = "comparison"
     left: ComparisonContent
     right: ComparisonContent
-    title: Union[TextBlock, None] = None
-    left_label: Union[TextBlock, None] = None
-    right_label: Union[TextBlock, None] = None
+    title: Union[TextSlot, None] = None
+    left_label: Union[TextSlot, None] = None
+    right_label: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
@@ -393,7 +452,7 @@ class KineticCanvasSlide(TypedSlide):
     word_3: Union[KineticWord, None] = None
     word_4: Union[KineticWord, None] = None
     word_5: Union[KineticWord, None] = None
-    caption: Union[TextBlock, None] = None
+    caption: Union[TextSlot, None] = None
     accent: Union[DividerBlock, KineticTextBlock, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
@@ -421,9 +480,9 @@ class KineticHeroSlide(TypedSlide):
     word_mid: KineticWord
     word_bottom: KineticWord
     ghost_bg: Union[KineticTextBlock, None] = None
-    label_top: Union[TextBlock, None] = None
-    label_bottom: Union[TextBlock, None] = None
-    tagline: Union[TextBlock, None] = None
+    label_top: Union[TextSlot, None] = None
+    label_bottom: Union[TextSlot, None] = None
+    tagline: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
@@ -444,12 +503,10 @@ class KineticHeroSlide(TypedSlide):
 
 # ── Technical ─────────────────────────────────────────────────────────────────
 
-CodeAnnotation = Union[TextBlock, ListBlock, CalloutBlock]
-
 
 class CodeWalkthroughSlide(TypedSlide):
     template_id: Literal["code-walkthrough"] = "code-walkthrough"
-    title: TextBlock
+    title: TextSlot
     code: CodeBlock
     annotation: Union[CodeAnnotation, None] = None
 
@@ -465,24 +522,24 @@ class CodeWalkthroughSlide(TypedSlide):
 
 class ArchitectureDiagramSlide(TypedSlide):
     template_id: Literal["architecture-diagram"] = "architecture-diagram"
-    title: TextBlock
+    title: TextSlot
     diagram: MediaBlock
-    notes: Union[ListBlock, TextBlock, None] = None
+    diagram_notes: Union[ListBlock, TextBlock, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {
             "title": self.title,
             "diagram": self.diagram,
         }
-        if self.notes is not None:
-            s["notes"] = self.notes
+        if self.diagram_notes is not None:
+            s["notes"] = self.diagram_notes
         return s
 
 
 class TerminalSlide(TypedSlide):
     template_id: Literal["terminal"] = "terminal"
     code: CodeBlock
-    title: Union[TextBlock, None] = None
+    title: Union[TextSlot, None] = None
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         s: dict[str, Union[Block, list[Block]]] = {"code": self.code}

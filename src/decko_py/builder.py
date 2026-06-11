@@ -54,25 +54,52 @@ class DeckBuilder:
             self._slides.append(slide)
         return self
 
-    def build(self) -> Deck:
-        return Deck(
+    def build(self, strict: bool = True, registry: object = None) -> Deck:
+        deck = Deck(
             meta=self._meta,
             theme=self._theme,
             variables=self._variables or None,
             slides=self._slides,
         )
+        from decko_py.models.catalog import register_defaults as _reg_defaults
+        from decko_py.registry import TemplateRegistry as _TR
+        from decko_py.validator import validate_content
+
+        _reg = registry if registry is not None else _TR()
+        if registry is None:
+            _reg_defaults(_reg)
+        violations = validate_content(deck, _reg)
+        if violations and strict:
+            lines = "\n".join(
+                f"  slide {v.slide_index}, slot '{v.slot_id}': {v.field} exceeded ({v.actual} > {v.budget})"
+                for v in violations
+            )
+            raise ValueError(f"Content budget violations:\n{lines}")
+        return deck
 
     def render_html(
         self,
         cdn: CdnConfig | None = None,
         block_registry: object | None = None,
+        strict: bool = True,
+        registry: object = None,
         **renderer_kwargs: object,
     ) -> str:
         from decko_py.renderer import HtmlRenderer
 
-        return HtmlRenderer(cdn, block_registry, **renderer_kwargs).render(self.build())  # type: ignore[arg-type]
+        return HtmlRenderer(cdn, block_registry, **renderer_kwargs).render(  # type: ignore[arg-type]
+            self.build(strict=strict, registry=registry)
+        )
 
-    def save(self, path: Union[str, Path], **renderer_kwargs: object) -> None:
+    def save(
+        self,
+        path: Union[str, Path],
+        strict: bool = True,
+        registry: object = None,
+        **renderer_kwargs: object,
+    ) -> None:
         from decko_py.renderer import HtmlRenderer
 
-        HtmlRenderer(**renderer_kwargs).save(self.build(), path)  # type: ignore[arg-type]
+        HtmlRenderer(**renderer_kwargs).save(  # type: ignore[arg-type]
+            self.build(strict=strict, registry=registry), path
+        )

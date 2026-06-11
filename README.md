@@ -11,17 +11,13 @@ pip install decko-py
 ## Quick start
 
 ```python
-from decko_py import DeckBuilder, TextBlock, TitleSlide
+from decko_py import DeckBuilder, TitleSlide
 
 html = (
     DeckBuilder()
     .meta("My Presentation", author="Alice")
     .theme("midnight")
-    .slide(
-        TitleSlide(
-            headline=TextBlock(content="Hello, World!", display="hero"),
-        )
-    )
+    .slide(TitleSlide(headline="Hello, World!"))
     .render_html()
 )
 
@@ -100,19 +96,20 @@ html = DeckBuilder()...render_html(block_registry=registry)
 | technical | `architecture-diagram` | `ArchitectureDiagramSlide` |
 | technical | `terminal` | `TerminalSlide` |
 
-Typed slide classes expose named, typed slot fields — no raw `slots` dict required:
+Typed slide classes expose named, typed slot fields — no raw `slots` dict required. Plain strings auto-coerce to `TextBlock`:
 
 ```python
-from decko_py import TitleSlide, HeaderBodySlide, ListBlock, TextBlock
+from decko_py import TitleSlide, HeaderBodySlide, ListBlock
 from decko_py.models.rich_text import ListItem
 
 DeckBuilder()
     .slide(TitleSlide(
-        headline=TextBlock(display="hero", content="My Deck"),
-        subtitle=TextBlock(display="subheading", content="Subtitle here"),
+        headline="My Deck",          # str → TextBlock automatically
+        subtitle="Subtitle here",
+        notes="Speaker notes here",  # shown in presenter mode
     ))
     .slide(HeaderBodySlide(
-        title=TextBlock(display="heading", content="Why Decko?"),
+        title="Why Decko?",
         body=ListBlock(display="bullets", items=[
             ListItem(text="Fully typed"),
             ListItem(text="23 built-in templates"),
@@ -121,6 +118,26 @@ DeckBuilder()
 ```
 
 `DeckBuilder.slide()` accepts both typed slide classes and raw `Slide` objects.
+
+Inspect slot requirements at the REPL:
+
+```python
+TitleSlide.slots_info()
+# TitleSlide [title-slide]
+#   headline             required   text  max_chars=120
+#   subtitle             optional   text  max_chars=200
+#   eyebrow              optional   text  max_chars=60
+#   logo                 optional   media
+
+TitleSlide.definition()  # returns the full BaseTemplate catalog entry
+```
+
+`DeckBuilder.build()` auto-validates content budgets by default. Pass `strict=False` to skip:
+
+```python
+deck = builder.build()               # raises ValueError on budget violations
+deck = builder.build(strict=False)   # skip validation
+```
 
 Extend `BaseTemplate` to define custom templates:
 
