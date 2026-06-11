@@ -53,12 +53,8 @@ ThreeUpContent = Annotated[
 ComparisonContent = Annotated[
     Union[MediaBlock, TextBlock, ListBlock], BeforeValidator(_str_to_text)
 ]
-CodeAnnotation = Annotated[
-    Union[TextBlock, ListBlock, CalloutBlock], BeforeValidator(_str_to_text)
-]
-KineticWord = Annotated[
-    Union[KineticTextBlock, TextBlock], BeforeValidator(_str_to_text)
-]
+CodeAnnotation = Annotated[Union[TextBlock, ListBlock, CalloutBlock], BeforeValidator(_str_to_text)]
+KineticWord = Annotated[Union[KineticTextBlock, TextBlock], BeforeValidator(_str_to_text)]
 
 
 # ── Base ──────────────────────────────────────────────────────────────────────
