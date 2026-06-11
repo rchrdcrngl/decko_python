@@ -1,19 +1,18 @@
 """Rich text, animations, transitions, custom theme tokens → rich_deck.html"""
 
 from decko_py import (
-    CalloutBlock,
     CodeBlock,
     DeckBuilder,
     HeaderBodySlide,
+    TemplateRegistry,
     TextBlock,
     TitleSlide,
-    TemplateRegistry,
     register_defaults,
 )
-from decko_py.models.animation import BlockAnimation, AnimatableProps
-from decko_py.models.rich_text import InlineNode, InlineLink, InlineAnimation
-from decko_py.models.transition import FadeTransition, PanTransition
+from decko_py.models.animation import AnimatableProps, BlockAnimation
+from decko_py.models.rich_text import InlineAnimation, InlineLink, InlineNode
 from decko_py.models.slide import SlideAmbient
+from decko_py.models.transition import FadeTransition, PanTransition
 
 registry = TemplateRegistry()
 register_defaults(registry)

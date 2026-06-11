@@ -1,18 +1,18 @@
 """Data-driven deck: chart + metrics + table → data_deck.html"""
 
 from decko_py import (
+    ChartBlock,
     ChartCalloutSlide,
+    ChartData,
+    ChartDataset,
     DeckBuilder,
     MetricBlock,
     MetricTrioSlide,
-    ChartBlock,
-    ChartData,
-    ChartDataset,
-    TableSlide,
     TableBlock,
+    TableSlide,
+    TemplateRegistry,
     TextBlock,
     TitleSlide,
-    TemplateRegistry,
     register_defaults,
 )
 

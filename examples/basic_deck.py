@@ -4,9 +4,9 @@ from decko_py import (
     DeckBuilder,
     HeaderBodySlide,
     ListBlock,
+    TemplateRegistry,
     TextBlock,
     TitleSlide,
-    TemplateRegistry,
     register_defaults,
 )
 from decko_py.models.rich_text import ListItem

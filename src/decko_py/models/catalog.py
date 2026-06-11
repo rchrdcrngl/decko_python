@@ -467,10 +467,16 @@ class MetricTrioTemplate(BaseTemplate):
             id="title",
             accepts=["text"],
             required=False,
-            content_budget=ContentBudget(max_chars=80),
+            content_budget=ContentBudget(max_chars=60),
+        ),
+        TemplateSlot(
+            id="footnote",
+            accepts=["text"],
+            required=False,
+            content_budget=ContentBudget(max_chars=100, max_words=15),
         ),
     ]
-    layout_modes: list[LayoutMode] = ["auto", "centered"]
+    layout_modes: list[LayoutMode] = ["auto"]
     ai_hints: AiHints = AiHints(
         when_to_use="Show exactly 3 headline numbers together.",
         good_for=["KPI scorecard", "before/after/target triplet", "three-pillar metrics"],
@@ -671,34 +677,34 @@ class ComparisonTemplate(BaseTemplate):
     description: str = "Side-by-side visual comparison with optional labels."
     slots: list[TemplateSlot] = [
         TemplateSlot(
-            id="left",
-            accepts=["media", "text", "list"],
-            required=True,
-            content_budget=ContentBudget(max_chars=300),
-        ),
-        TemplateSlot(
-            id="right",
-            accepts=["media", "text", "list"],
-            required=True,
-            content_budget=ContentBudget(max_chars=300),
-        ),
-        TemplateSlot(
             id="title",
             accepts=["text"],
             required=False,
-            content_budget=ContentBudget(max_chars=80),
+            content_budget=ContentBudget(max_chars=80, max_words=10),
         ),
         TemplateSlot(
             id="left-label",
             accepts=["text"],
             required=False,
-            content_budget=ContentBudget(max_chars=60),
+            content_budget=ContentBudget(max_chars=30, max_words=4),
         ),
         TemplateSlot(
             id="right-label",
             accepts=["text"],
             required=False,
-            content_budget=ContentBudget(max_chars=60),
+            content_budget=ContentBudget(max_chars=30, max_words=4),
+        ),
+        TemplateSlot(
+            id="before",
+            accepts=["media", "text", "list"],
+            required=True,
+            content_budget=ContentBudget(max_chars=250, max_words=40),
+        ),
+        TemplateSlot(
+            id="after",
+            accepts=["media", "text", "list"],
+            required=True,
+            content_budget=ContentBudget(max_chars=250, max_words=40),
         ),
     ]
     layout_modes: list[LayoutMode] = ["auto", "split"]
