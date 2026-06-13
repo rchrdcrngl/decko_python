@@ -135,7 +135,7 @@ from decko_py.registry import BlockRegistry, TemplateRegistry
 from decko_py.renderer import HtmlRenderer
 from decko_py.validator import ContentViolation, validate_content
 
-__version__ = "0.1.0"
+__version__ = "0.2.1"
 
 __all__ = [
     "__version__",
