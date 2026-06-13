@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Union
 
-from decko_py.models.blocks import CalloutBlock, TextBlock
 from decko_py.models.slide import Deck
+from decko_py.models.utils.text_utils import _extract_text
 
 
 @dataclass
@@ -64,11 +63,3 @@ def validate_content(deck: Deck, registry: object) -> list[ContentViolation]:
     return violations
 
 
-def _extract_text(block: object) -> Union[str, None]:
-    if isinstance(block, TextBlock):
-        content = block.content
-        return content if isinstance(content, str) else "".join(n.text for n in content)
-    if isinstance(block, CalloutBlock):
-        body = block.body
-        return body if isinstance(body, str) else "".join(n.text for n in body)
-    return None

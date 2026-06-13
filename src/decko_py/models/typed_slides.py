@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal, Union
 
-from pydantic import BaseModel, BeforeValidator, ConfigDict
+from pydantic import BaseModel, BeforeValidator, ConfigDict, model_validator
 from pydantic.alias_generators import to_camel
 from typing_extensions import Annotated
 
@@ -82,6 +82,46 @@ class TypedSlide(BaseModel):
 
     def _build_slots(self) -> dict[str, Union[Block, list[Block]]]:
         raise NotImplementedError
+
+    @model_validator(mode="after")
+    def _validate_budgets(self) -> TypedSlide:
+        from decko_py.models.utils.text_utils import _extract_text
+
+        defn = self.__class__.definition()
+        if defn is None:
+            return self
+
+        budget_map = {slot.id: slot.content_budget for slot in defn.slots}
+        slots = self._build_slots()
+        violations: list[str] = []
+
+        for slot_id, block in slots.items():
+            budget = budget_map.get(slot_id)
+            if budget is None:
+                continue
+            text = _extract_text(block)
+            if text is None:
+                continue
+            if budget.max_chars and len(text) > budget.max_chars:
+                violations.append(
+                    f"  {slot_id}: max_chars={budget.max_chars}, got {len(text)}"
+                )
+            if budget.max_words and len(text.split()) > budget.max_words:
+                violations.append(
+                    f"  {slot_id}: max_words={budget.max_words}, got {len(text.split())}"
+                )
+            if budget.max_lines and text.count("\n") + 1 > budget.max_lines:
+                violations.append(
+                    f"  {slot_id}: max_lines={budget.max_lines}, got {text.count(chr(10)) + 1}"
+                )
+
+        if violations:
+            name = self.__class__.__name__
+            raise ValueError(
+                f"{name} budget violations:\n" + "\n".join(violations)
+            )
+
+        return self
 
     def to_slide(self) -> Slide:
         return Slide(
