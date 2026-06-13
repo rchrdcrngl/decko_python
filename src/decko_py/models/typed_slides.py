@@ -103,9 +103,7 @@ class TypedSlide(BaseModel):
             if text is None:
                 continue
             if budget.max_chars and len(text) > budget.max_chars:
-                violations.append(
-                    f"  {slot_id}: max_chars={budget.max_chars}, got {len(text)}"
-                )
+                violations.append(f"  {slot_id}: max_chars={budget.max_chars}, got {len(text)}")
             if budget.max_words and len(text.split()) > budget.max_words:
                 violations.append(
                     f"  {slot_id}: max_words={budget.max_words}, got {len(text.split())}"
@@ -117,9 +115,7 @@ class TypedSlide(BaseModel):
 
         if violations:
             name = self.__class__.__name__
-            raise ValueError(
-                f"{name} budget violations:\n" + "\n".join(violations)
-            )
+            raise ValueError(f"{name} budget violations:\n" + "\n".join(violations))
 
         return self
 

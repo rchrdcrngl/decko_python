@@ -61,5 +61,3 @@ def validate_content(deck: Deck, registry: object) -> list[ContentViolation]:
                     )
 
     return violations
-
-

@@ -1,4 +1,5 @@
 """Budget validation tests for TypedSlide @model_validator."""
+
 import pytest
 from pydantic import ValidationError
 
