@@ -19,7 +19,6 @@ from decko_py.models.typed_slides import (
     TitleSlide,
 )
 
-
 # ── _extract_text helpers ─────────────────────────────────────────────────────
 
 
@@ -232,8 +231,9 @@ class TestKineticHeroSlideBudget:
 
 class TestNoDefinitionSkipsValidation:
     def test_custom_template_id_skips_budget_check(self):
-        from decko_py.models.typed_slides import TypedSlide
         from typing import Literal
+
+        from decko_py.models.typed_slides import TypedSlide
 
         class CustomSlide(TypedSlide):
             template_id: Literal["x-unknown"] = "x-unknown"
